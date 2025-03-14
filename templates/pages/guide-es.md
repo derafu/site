@@ -4,7 +4,7 @@ Esta guía explica cómo crear un nuevo sitio web usando esta base y los proyect
 
 [TOC]
 
-## Revisar lo que necesitas hacer, instalar o saber
+## Revisa lo que necesitas hacer, instalar o saber
 
 ### Clave SSH en equipo local
 
@@ -39,7 +39,7 @@ cat $HOME/.ssh/id_rsa.pub
 
 ### Contenedor Docker con PHP y Caddy
 
-Instalar [Docker](https://derafu.org/docker-php-caddy-server) en `$DOCKER_DIR` en el equipo local:
+Preparar [Docker](https://derafu.org/docker-php-caddy-server) en `$DOCKER_DIR` en el equipo local:
 
 ```shell
 DEV_DIR=$HOME/dev
@@ -48,6 +48,18 @@ mkdir -p $DEV_DIR
 git clone https://github.com/derafu/docker-php-caddy-server.git $DOCKER_DIR
 cat $HOME/.ssh/id_rsa.pub > $DOCKER_DIR/config/ssh/authorized_keys
 cd $DOCKER_DIR
+```
+
+Copiar y editar el archivo `.env` y configurar las variables de entorno según sea necesario.
+
+```shell
+# Se recomienda al menos configurar la variable DEPLOYER_HOST.
+cp .env-dist .env
+```
+
+Construir el contenedor Docker:
+
+```shell
 docker-compose up -d
 ```
 
@@ -88,29 +100,6 @@ Host dev
 
 **Nota**: El nombre del alias puede ser el que quieras, en este caso se usó `dev`.
 
-### PHP Deployer
-
-Conectate al contenedor Docker e instala [PHP Deployer](https://derafu.org/deployer) en `$DEPLOYER_DIR` dentro del contenedor:
-
-```shell
-#DEPLOYER_DIR=$HOME/deployer # Esta variable ya está definida en el contenedor.
-git clone git@github.com:derafu/deployer.git $DEPLOYER_DIR
-cd $DEPLOYER_DIR
-composer update
-```
-
-### Configuración de sitios web
-
-El archivo `$DEPLOYER_DIR/sites.php` contiene la configuración de los sitios web que se desplegarán:
-
-```php
-return [
-    'www.example.com' => 'git@github.com:example/example.git',
-];
-```
-
-En este caso el sitio web es `www.example.com` y el repositorio es `git@github.com:example/example.git`. Deberás agregar a este archivo la configuración de todos los sitios web que podrías desplegar.
-
 ### Clave SSH en el contenedor Docker
 
 Para hacer deploy al servidor de producción, es necesario que la clave SSH en el equipo local sea agregada al contenedor Docker.
@@ -129,16 +118,14 @@ scp $HOME/.ssh/id_rsa* dev:.ssh/
 
 **Nota**: Si prefieres mantener claves SSH diferentes para el contenedor Docker deberás crear una nueva clave SSH. Puedes usar el mismo comando que se usó para crear la clave SSH en el equipo local.
 
-## Desarrollar un sitio web
+## Desarrolla un sitio web
 
 ### Crear un nuevo sitio web
 
 Ingresar al contenedor y ejecuta:
 
 ```shell
-#SITES_DIR=$HOME/sites # Esta variable ya está definida en el contenedor.
-cd $SITES_DIR
-composer create-project derafu/website www.example.com --stability=dev
+site-create www.example.com
 ```
 
 ### Clonar un sitio web
@@ -146,39 +133,42 @@ composer create-project derafu/website www.example.com --stability=dev
 Ingresar al contenedor y ejecuta:
 
 ```shell
-#SITES_DIR=$HOME/sites # Esta variable ya está definida en el contenedor.
-cd $SITES_DIR
-git clone git@github.com:example/example.git www.example.com
-cd www.example.com
-composer install
+site-clone www.example.com git@github.com:example/example.git
 ```
 
 **Nota**: Si el nombre del repositorio no es el mismo que el nombre del sitio web, deberás asignar, como en este ejemplo, explícitamente el nombre de la carpeta del sitio web. Si el nombre del repositorio es el mismo que el nombre del sitio web, puedes omitir el nombre de la carpeta.
 
-## Desplegar un sitio web a producción
+### Visitar el sitio web en el navegador
+
+En tu equipo configura `/etc/hosts` agregando el dominio de desarrollo local:
+
+```shell
+echo "127.0.0.1         www.example.com.local" | sudo tee -a /etc/hosts
+```
+
+Luego podrás acceder al sitio web mediante la URL https://www.example.com.local:8443
+
+## Despliega un sitio web a producción
 
 Todas estas instrucciones se ejecutan en el contenedor Docker.
 
 ### Agregar sitio web en el archivo de configuración
 
-Asegurate de que el sitio web esté agregado en el archivo `$DEPLOYER_DIR/sites.php`. Puedes validar esto ejecutando:
+Si creaste el sitio de 0 en vez de clonarlo, asegurate de que el sitio web esté agregado en el archivo `$DEPLOYER_DIR/sites.php`. Puedes validar esto ejecutando:
 
 ```shell
-cd $DEPLOYER_DIR
-cat sites.php | grep 'www.example.com'
+site-add www.example.com git@github.com:example/example.git
 ```
 
-Si el sitio web no está agregado, deberás agregarlo en el archivo `$DEPLOYER_DIR/sites.php`.
+**Nota** Si el sitio requiere una configuración especial deberás editar manualmente el archivo `$DEPLOYER_DIR/sites.php`.
 
 ### Pruebas de estilo, calidad de código y pruebas unitarias
 
 Realiza pruebas de estilo, calidad de código y pruebas unitarias en el contenedor Docker con:
 
 ```shell
-cd $SITES_DIR/www.example.com
-composer phpcs
-composer phpstan
-composer tests
+site www.example.com
+site-check
 ```
 
 ### Subir cambios a GitHub
@@ -186,9 +176,8 @@ composer tests
 Si todo está correcto sube los cambios a GitHub:
 
 ```shell
-git add .
-git commit -m "Actualización de sitio web"
-git push
+site www.example.com
+site-send "Actualización de sitio web."
 ```
 
 ### Despliegue
@@ -196,24 +185,18 @@ git push
 Si no hay errores, puedes hacer deploy al servidor de producción con:
 
 ```shell
-cd $DEPLOYER_DIR
-DEPLOYER_HOST=hosting.example.com
-vendor/bin/dep derafu:deploy:single --site=www.example.com
+#DEPLOYER_HOST=hosting.example.com # Solo si no se configuró en .env
+site-deploy www.example.com
 ```
-
-Acá debes modificar el host de producción y el sitio web que se desplegará.
-
-- `DEPLOYER_HOST`: host de producción, en este ejemplo es `hosting.example.com`.
-- `--site`: sitio web que se desplegará, en este ejemplo es `www.example.com`.
 
 Si ocurre algún error al hacer el deploy y tratas de hacer un deploy nuevo, es muy probable que el deploy esté bloqueado. Si esto sucede, puedes desbloquear y hacer deploy nuevamente con:
 
 ```shell
-DEPLOYER_HOST=hosting.example.com
-vendor/bin/dep derafu:deploy:single --site=www.example.com --unlock
+#DEPLOYER_HOST=hosting.example.com # Solo si no se configuró en .env
+site-deploy-locked www.example.com
 ```
 
-## Actualizar componentes
+## Actualiza componentes
 
 ### Actualizar Docker
 
@@ -243,9 +226,8 @@ composer update
 Ingresar al contenedor y ejecuta:
 
 ```shell
-cd $SITES_DIR/www.example.com
-git pull
-composer install
+site www.example.com
+site-update
 ```
 
 ## Uso de herramientas de desarrollo
