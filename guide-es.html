@@ -23,24 +23,23 @@
     <div class="markdown-body"><h1><a id="content-guía-en-español" href="guide-es.html#content-guía-en-español" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Guía en Español</h1>
 <p>Esta guía explica cómo crear un nuevo sitio web usando esta base y los proyectos de <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://derafu.org/docker-php-caddy-server">Docker</a> y <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://derafu.org/deployer">PHP Deployer</a> para el desarrollo local y despliegue en el servidor de producción.</p>
 <ul class="table-of-contents">
-<li><a href="guide-es.html#content-revisar-lo-que-necesitas-hacer-instalar-o-saber">Revisar lo que necesitas hacer, instalar o saber</a>
+<li><a href="guide-es.html#content-revisa-lo-que-necesitas-hacer-instalar-o-saber">Revisa lo que necesitas hacer, instalar o saber</a>
 <ul>
 <li><a href="guide-es.html#content-clave-ssh-en-equipo-local">Clave SSH en equipo local</a></li>
 <li><a href="guide-es.html#content-agregar-clave-ssh-a-github">Agregar clave SSH a GitHub</a></li>
 <li><a href="guide-es.html#content-contenedor-docker-con-php-y-caddy">Contenedor Docker con PHP y Caddy</a></li>
 <li><a href="guide-es.html#content-conectar-al-contenedor-docker">Conectar al contenedor Docker</a></li>
-<li><a href="guide-es.html#content-php-deployer">PHP Deployer</a></li>
-<li><a href="guide-es.html#content-configuración-de-sitios-web">Configuración de sitios web</a></li>
 <li><a href="guide-es.html#content-clave-ssh-en-el-contenedor-docker">Clave SSH en el contenedor Docker</a></li>
 </ul>
 </li>
-<li><a href="guide-es.html#content-desarrollar-un-sitio-web">Desarrollar un sitio web</a>
+<li><a href="guide-es.html#content-desarrolla-un-sitio-web">Desarrolla un sitio web</a>
 <ul>
 <li><a href="guide-es.html#content-crear-un-nuevo-sitio-web">Crear un nuevo sitio web</a></li>
 <li><a href="guide-es.html#content-clonar-un-sitio-web">Clonar un sitio web</a></li>
+<li><a href="guide-es.html#content-visitar-el-sitio-web-en-el-navegador">Visitar el sitio web en el navegador</a></li>
 </ul>
 </li>
-<li><a href="guide-es.html#content-desplegar-un-sitio-web-a-producción">Desplegar un sitio web a producción</a>
+<li><a href="guide-es.html#content-despliega-un-sitio-web-a-producción">Despliega un sitio web a producción</a>
 <ul>
 <li><a href="guide-es.html#content-agregar-sitio-web-en-el-archivo-de-configuración">Agregar sitio web en el archivo de configuración</a></li>
 <li><a href="guide-es.html#content-pruebas-de-estilo-calidad-de-código-y-pruebas-unitarias">Pruebas de estilo, calidad de código y pruebas unitarias</a></li>
@@ -48,7 +47,7 @@
 <li><a href="guide-es.html#content-despliegue">Despliegue</a></li>
 </ul>
 </li>
-<li><a href="guide-es.html#content-actualizar-componentes">Actualizar componentes</a>
+<li><a href="guide-es.html#content-actualiza-componentes">Actualiza componentes</a>
 <ul>
 <li><a href="guide-es.html#content-actualizar-docker">Actualizar Docker</a></li>
 <li><a href="guide-es.html#content-actualizar-php-deployer">Actualizar PHP Deployer</a></li>
@@ -66,7 +65,7 @@
 </li>
 <li><a href="guide-es.html#content-uso-de-terminal-en-el-contenedor-docker">Uso de terminal en el contenedor Docker</a></li>
 </ul>
-<h2><a id="content-revisar-lo-que-necesitas-hacer-instalar-o-saber" href="guide-es.html#content-revisar-lo-que-necesitas-hacer-instalar-o-saber" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Revisar lo que necesitas hacer, instalar o saber</h2>
+<h2><a id="content-revisa-lo-que-necesitas-hacer-instalar-o-saber" href="guide-es.html#content-revisa-lo-que-necesitas-hacer-instalar-o-saber" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Revisa lo que necesitas hacer, instalar o saber</h2>
 <h3><a id="content-clave-ssh-en-equipo-local" href="guide-es.html#content-clave-ssh-en-equipo-local" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Clave SSH en equipo local</h3>
 <p>Es necesario tener una clave SSH en el equipo local, esta clave será utilizada para configurar tu contenedor Docker.</p>
 <p>Con el siguiente comando se obtiene una clave preexistente o se crea una nueva en <code>$HOME/.ssh/id_rsa</code> y <code>$HOME/.ssh/id_rsa.pub</code>. Si se crea una nueva deberás ingresar el correo para identificar al usuario dueño de la clave. Si lo prefieres, puedes ingresar tu usuario y nombre de equipo (en caso que tengas múltiples claves SSH en diferentes ambientes).</p>
@@ -90,14 +89,20 @@ fi
 <li>Haz click en <code>Add SSH key</code>.</li>
 </ol>
 <h3><a id="content-contenedor-docker-con-php-y-caddy" href="guide-es.html#content-contenedor-docker-con-php-y-caddy" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Contenedor Docker con PHP y Caddy</h3>
-<p>Instalar <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://derafu.org/docker-php-caddy-server">Docker</a> en <code>$DOCKER_DIR</code> en el equipo local:</p>
+<p>Preparar <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://derafu.org/docker-php-caddy-server">Docker</a> en <code>$DOCKER_DIR</code> en el equipo local:</p>
 <pre><code class="line-numbers match-braces language-shell">DEV_DIR=$HOME/dev
 DOCKER_DIR=$DEV_DIR/docker-sites-php
 mkdir -p $DEV_DIR
 git clone https://github.com/derafu/docker-php-caddy-server.git $DOCKER_DIR
 cat $HOME/.ssh/id_rsa.pub &gt; $DOCKER_DIR/config/ssh/authorized_keys
 cd $DOCKER_DIR
-docker-compose up -d
+</code></pre>
+<p>Copiar y editar el archivo <code>.env</code> y configurar las variables de entorno según sea necesario.</p>
+<pre><code class="line-numbers match-braces language-shell"># Se recomienda al menos configurar la variable DEPLOYER_HOST.
+cp .env-dist .env
+</code></pre>
+<p>Construir el contenedor Docker:</p>
+<pre><code class="line-numbers match-braces language-shell">docker-compose up -d
 </code></pre>
 <p>Con esta configuración quedará en <code>$DOCKER_DIR/sites</code> la carpeta donde se instalarán los sitios a desarrollar. Esta carpeta estará compartida entre el equipo local y el contenedor Docker.</p>
 <h3><a id="content-conectar-al-contenedor-docker" href="guide-es.html#content-conectar-al-contenedor-docker" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Conectar al contenedor Docker</h3>
@@ -121,20 +126,6 @@ Host dev
 &quot; &gt;&gt; $HOME/.ssh/config
 </code></pre>
 <p><strong>Nota</strong>: El nombre del alias puede ser el que quieras, en este caso se usó <code>dev</code>.</p>
-<h3><a id="content-php-deployer" href="guide-es.html#content-php-deployer" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>PHP Deployer</h3>
-<p>Conectate al contenedor Docker e instala <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://derafu.org/deployer">PHP Deployer</a> en <code>$DEPLOYER_DIR</code> dentro del contenedor:</p>
-<pre><code class="line-numbers match-braces language-shell">#DEPLOYER_DIR=$HOME/deployer # Esta variable ya está definida en el contenedor.
-git clone git@github.com:derafu/deployer.git $DEPLOYER_DIR
-cd $DEPLOYER_DIR
-composer update
-</code></pre>
-<h3><a id="content-configuración-de-sitios-web" href="guide-es.html#content-configuración-de-sitios-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configuración de sitios web</h3>
-<p>El archivo <code>$DEPLOYER_DIR/sites.php</code> contiene la configuración de los sitios web que se desplegarán:</p>
-<pre><code class="line-numbers match-braces language-php">return [
-    'www.example.com' =&gt; 'git@github.com:example/example.git',
-];
-</code></pre>
-<p>En este caso el sitio web es <code>www.example.com</code> y el repositorio es <code>git@github.com:example/example.git</code>. Deberás agregar a este archivo la configuración de todos los sitios web que podrías desplegar.</p>
 <h3><a id="content-clave-ssh-en-el-contenedor-docker" href="guide-es.html#content-clave-ssh-en-el-contenedor-docker" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Clave SSH en el contenedor Docker</h3>
 <p>Para hacer deploy al servidor de producción, es necesario que la clave SSH en el equipo local sea agregada al contenedor Docker.</p>
 <p>En tu equipo local, ejecuta:</p>
@@ -144,59 +135,48 @@ composer update
 <pre><code class="line-numbers match-braces language-shell">scp $HOME/.ssh/id_rsa* dev:.ssh/
 </code></pre>
 <p><strong>Nota</strong>: Si prefieres mantener claves SSH diferentes para el contenedor Docker deberás crear una nueva clave SSH. Puedes usar el mismo comando que se usó para crear la clave SSH en el equipo local.</p>
-<h2><a id="content-desarrollar-un-sitio-web" href="guide-es.html#content-desarrollar-un-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Desarrollar un sitio web</h2>
+<h2><a id="content-desarrolla-un-sitio-web" href="guide-es.html#content-desarrolla-un-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Desarrolla un sitio web</h2>
 <h3><a id="content-crear-un-nuevo-sitio-web" href="guide-es.html#content-crear-un-nuevo-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Crear un nuevo sitio web</h3>
 <p>Ingresar al contenedor y ejecuta:</p>
-<pre><code class="line-numbers match-braces language-shell">#SITES_DIR=$HOME/sites # Esta variable ya está definida en el contenedor.
-cd $SITES_DIR
-composer create-project derafu/website www.example.com --stability=dev
+<pre><code class="line-numbers match-braces language-shell">site-create www.example.com
 </code></pre>
 <h3><a id="content-clonar-un-sitio-web" href="guide-es.html#content-clonar-un-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Clonar un sitio web</h3>
 <p>Ingresar al contenedor y ejecuta:</p>
-<pre><code class="line-numbers match-braces language-shell">#SITES_DIR=$HOME/sites # Esta variable ya está definida en el contenedor.
-cd $SITES_DIR
-git clone git@github.com:example/example.git www.example.com
-cd www.example.com
-composer install
+<pre><code class="line-numbers match-braces language-shell">site-clone www.example.com git@github.com:example/example.git
 </code></pre>
 <p><strong>Nota</strong>: Si el nombre del repositorio no es el mismo que el nombre del sitio web, deberás asignar, como en este ejemplo, explícitamente el nombre de la carpeta del sitio web. Si el nombre del repositorio es el mismo que el nombre del sitio web, puedes omitir el nombre de la carpeta.</p>
-<h2><a id="content-desplegar-un-sitio-web-a-producción" href="guide-es.html#content-desplegar-un-sitio-web-a-producción" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Desplegar un sitio web a producción</h2>
+<h3><a id="content-visitar-el-sitio-web-en-el-navegador" href="guide-es.html#content-visitar-el-sitio-web-en-el-navegador" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Visitar el sitio web en el navegador</h3>
+<p>En tu equipo configura <code>/etc/hosts</code> agregando el dominio de desarrollo local:</p>
+<pre><code class="line-numbers match-braces language-shell">echo &quot;127.0.0.1         www.example.com.local&quot; | sudo tee -a /etc/hosts
+</code></pre>
+<p>Luego podrás acceder al sitio web mediante la URL <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://www.example.com.local:8443">https://www.example.com.local:8443</a></p>
+<h2><a id="content-despliega-un-sitio-web-a-producción" href="guide-es.html#content-despliega-un-sitio-web-a-producción" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Despliega un sitio web a producción</h2>
 <p>Todas estas instrucciones se ejecutan en el contenedor Docker.</p>
 <h3><a id="content-agregar-sitio-web-en-el-archivo-de-configuración" href="guide-es.html#content-agregar-sitio-web-en-el-archivo-de-configuración" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Agregar sitio web en el archivo de configuración</h3>
-<p>Asegurate de que el sitio web esté agregado en el archivo <code>$DEPLOYER_DIR/sites.php</code>. Puedes validar esto ejecutando:</p>
-<pre><code class="line-numbers match-braces language-shell">cd $DEPLOYER_DIR
-cat sites.php | grep 'www.example.com'
+<p>Si creaste el sitio de 0 en vez de clonarlo, asegurate de que el sitio web esté agregado en el archivo <code>$DEPLOYER_DIR/sites.php</code>. Puedes validar esto ejecutando:</p>
+<pre><code class="line-numbers match-braces language-shell">site-add www.example.com git@github.com:example/example.git
 </code></pre>
-<p>Si el sitio web no está agregado, deberás agregarlo en el archivo <code>$DEPLOYER_DIR/sites.php</code>.</p>
+<p><strong>Nota</strong> Si el sitio requiere una configuración especial deberás editar manualmente el archivo <code>$DEPLOYER_DIR/sites.php</code>.</p>
 <h3><a id="content-pruebas-de-estilo-calidad-de-código-y-pruebas-unitarias" href="guide-es.html#content-pruebas-de-estilo-calidad-de-código-y-pruebas-unitarias" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Pruebas de estilo, calidad de código y pruebas unitarias</h3>
 <p>Realiza pruebas de estilo, calidad de código y pruebas unitarias en el contenedor Docker con:</p>
-<pre><code class="line-numbers match-braces language-shell">cd $SITES_DIR/www.example.com
-composer phpcs
-composer phpstan
-composer tests
+<pre><code class="line-numbers match-braces language-shell">site www.example.com
+site-check
 </code></pre>
 <h3><a id="content-subir-cambios-a-github" href="guide-es.html#content-subir-cambios-a-github" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Subir cambios a GitHub</h3>
 <p>Si todo está correcto sube los cambios a GitHub:</p>
-<pre><code class="line-numbers match-braces language-shell">git add .
-git commit -m &quot;Actualización de sitio web&quot;
-git push
+<pre><code class="line-numbers match-braces language-shell">site www.example.com
+site-send &quot;Actualización de sitio web.&quot;
 </code></pre>
 <h3><a id="content-despliegue" href="guide-es.html#content-despliegue" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Despliegue</h3>
 <p>Si no hay errores, puedes hacer deploy al servidor de producción con:</p>
-<pre><code class="line-numbers match-braces language-shell">cd $DEPLOYER_DIR
-DEPLOYER_HOST=hosting.example.com
-vendor/bin/dep derafu:deploy:single --site=www.example.com
+<pre><code class="line-numbers match-braces language-shell">#DEPLOYER_HOST=hosting.example.com # Solo si no se configuró en .env
+site-deploy www.example.com
 </code></pre>
-<p>Acá debes modificar el host de producción y el sitio web que se desplegará.</p>
-<ul>
-<li><code>DEPLOYER_HOST</code>: host de producción, en este ejemplo es <code>hosting.example.com</code>.</li>
-<li><code>--site</code>: sitio web que se desplegará, en este ejemplo es <code>www.example.com</code>.</li>
-</ul>
 <p>Si ocurre algún error al hacer el deploy y tratas de hacer un deploy nuevo, es muy probable que el deploy esté bloqueado. Si esto sucede, puedes desbloquear y hacer deploy nuevamente con:</p>
-<pre><code class="line-numbers match-braces language-shell">DEPLOYER_HOST=hosting.example.com
-vendor/bin/dep derafu:deploy:single --site=www.example.com --unlock
+<pre><code class="line-numbers match-braces language-shell">#DEPLOYER_HOST=hosting.example.com # Solo si no se configuró en .env
+site-deploy-locked www.example.com
 </code></pre>
-<h2><a id="content-actualizar-componentes" href="guide-es.html#content-actualizar-componentes" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Actualizar componentes</h2>
+<h2><a id="content-actualiza-componentes" href="guide-es.html#content-actualiza-componentes" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Actualiza componentes</h2>
 <h3><a id="content-actualizar-docker" href="guide-es.html#content-actualizar-docker" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Actualizar Docker</h3>
 <p>En tu equipo local, ejecuta:</p>
 <pre><code class="line-numbers match-braces language-shell">cd $DOCKER_DIR
@@ -213,9 +193,8 @@ composer update
 </code></pre>
 <h3><a id="content-actualizar-sitio-web" href="guide-es.html#content-actualizar-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Actualizar sitio web</h3>
 <p>Ingresar al contenedor y ejecuta:</p>
-<pre><code class="line-numbers match-braces language-shell">cd $SITES_DIR/www.example.com
-git pull
-composer install
+<pre><code class="line-numbers match-braces language-shell">site www.example.com
+site-update
 </code></pre>
 <h2><a id="content-uso-de-herramientas-de-desarrollo" href="guide-es.html#content-uso-de-herramientas-de-desarrollo" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Uso de herramientas de desarrollo</h2>
 <h3><a id="content-composer" href="guide-es.html#content-composer" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Composer</h3>
