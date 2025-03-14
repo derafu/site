@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derafu: Site - Base for Derafu’s Websites</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.css" rel="stylesheet" />
+    <link href="https://derafu.org/css/styles.min.css" rel="stylesheet" />
+    </head>
+<body>
+                <div id="header-container" class="sticky-top"></div>
+    
+            <div class="container">
+            <div class="row">
+                <main class="col-md-9">
+                    <div class="container py-4">
+    <div class="markdown-body"><h1><a id="content-guía-en-español" href="guide-es.html#content-guía-en-español" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Guía en Español</h1>
+<p>Esta guía explica cómo crear un nuevo sitio web usando esta base y los proyectos de <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://derafu.org/docker-php-caddy-server">Docker</a> y <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://derafu.org/deployer">PHP Deployer</a> para el desarrollo local y despliegue en el servidor de producción.</p>
+<ul class="table-of-contents">
+<li><a href="guide-es.html#content-revisar-lo-que-necesitas-hacer-instalar-o-saber">Revisar lo que necesitas hacer, instalar o saber</a>
+<ul>
+<li><a href="guide-es.html#content-clave-ssh-en-equipo-local">Clave SSH en equipo local</a></li>
+<li><a href="guide-es.html#content-agregar-clave-ssh-a-github">Agregar clave SSH a GitHub</a></li>
+<li><a href="guide-es.html#content-contenedor-docker-con-php-y-caddy">Contenedor Docker con PHP y Caddy</a></li>
+<li><a href="guide-es.html#content-conectar-al-contenedor-docker">Conectar al contenedor Docker</a></li>
+<li><a href="guide-es.html#content-php-deployer">PHP Deployer</a></li>
+<li><a href="guide-es.html#content-configuración-de-sitios-web">Configuración de sitios web</a></li>
+<li><a href="guide-es.html#content-clave-ssh-en-el-contenedor-docker">Clave SSH en el contenedor Docker</a></li>
+</ul>
+</li>
+<li><a href="guide-es.html#content-desarrollar-un-sitio-web">Desarrollar un sitio web</a>
+<ul>
+<li><a href="guide-es.html#content-crear-un-nuevo-sitio-web">Crear un nuevo sitio web</a></li>
+<li><a href="guide-es.html#content-clonar-un-sitio-web">Clonar un sitio web</a></li>
+</ul>
+</li>
+<li><a href="guide-es.html#content-desplegar-un-sitio-web-a-producción">Desplegar un sitio web a producción</a>
+<ul>
+<li><a href="guide-es.html#content-agregar-sitio-web-en-el-archivo-de-configuración">Agregar sitio web en el archivo de configuración</a></li>
+<li><a href="guide-es.html#content-pruebas-de-estilo-calidad-de-código-y-pruebas-unitarias">Pruebas de estilo, calidad de código y pruebas unitarias</a></li>
+<li><a href="guide-es.html#content-subir-cambios-a-github">Subir cambios a GitHub</a></li>
+<li><a href="guide-es.html#content-despliegue">Despliegue</a></li>
+</ul>
+</li>
+<li><a href="guide-es.html#content-actualizar-componentes">Actualizar componentes</a>
+<ul>
+<li><a href="guide-es.html#content-actualizar-docker">Actualizar Docker</a></li>
+<li><a href="guide-es.html#content-actualizar-php-deployer">Actualizar PHP Deployer</a></li>
+<li><a href="guide-es.html#content-actualizar-sitio-web">Actualizar sitio web</a></li>
+</ul>
+</li>
+<li><a href="guide-es.html#content-uso-de-herramientas-de-desarrollo">Uso de herramientas de desarrollo</a>
+<ul>
+<li><a href="guide-es.html#content-composer">Composer</a></li>
+<li><a href="guide-es.html#content-npm">NPM</a></li>
+<li><a href="guide-es.html#content-git">Git</a></li>
+<li><a href="guide-es.html#content-php-cs-fixer">PHP CS Fixer</a></li>
+<li><a href="guide-es.html#content-php-unit">PHP Unit</a></li>
+</ul>
+</li>
+<li><a href="guide-es.html#content-uso-de-terminal-en-el-contenedor-docker">Uso de terminal en el contenedor Docker</a></li>
+</ul>
+<h2><a id="content-revisar-lo-que-necesitas-hacer-instalar-o-saber" href="guide-es.html#content-revisar-lo-que-necesitas-hacer-instalar-o-saber" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Revisar lo que necesitas hacer, instalar o saber</h2>
+<h3><a id="content-clave-ssh-en-equipo-local" href="guide-es.html#content-clave-ssh-en-equipo-local" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Clave SSH en equipo local</h3>
+<p>Es necesario tener una clave SSH en el equipo local, esta clave será utilizada para configurar tu contenedor Docker.</p>
+<p>Con el siguiente comando se obtiene una clave preexistente o se crea una nueva en <code>$HOME/.ssh/id_rsa</code> y <code>$HOME/.ssh/id_rsa.pub</code>. Si se crea una nueva deberás ingresar el correo para identificar al usuario dueño de la clave. Si lo prefieres, puedes ingresar tu usuario y nombre de equipo (en caso que tengas múltiples claves SSH en diferentes ambientes).</p>
+<pre><code class="line-numbers match-braces language-shell">if [ -f $HOME/.ssh/id_rsa.pub ]; then
+    cat $HOME/.ssh/id_rsa.pub
+else
+    read -p &quot;Ingresa tu correo: &quot; COMMENT
+    ssh-keygen -t rsa -b 4096 -N &quot;&quot; -C &quot;$COMMENT&quot; -f $HOME/.ssh/id_rsa
+    cat $HOME/.ssh/id_rsa.pub
+fi
+</code></pre>
+<p>Con este comando la clave pública será mostrada en pantalla. Si la necesitas volver a ver en el futuro ejecuta:</p>
+<pre><code class="line-numbers match-braces language-shell">cat $HOME/.ssh/id_rsa.pub
+</code></pre>
+<p><strong>Importante</strong>: La clave en <code>$HOME/.ssh/id_rsa</code> es <strong>privada</strong> y jamás debe ser compartida.</p>
+<h3><a id="content-agregar-clave-ssh-a-github" href="guide-es.html#content-agregar-clave-ssh-a-github" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Agregar clave SSH a GitHub</h3>
+<ol>
+<li>Ir a <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://github.com/settings/ssh/new">GitHub</a>.</li>
+<li>En <code>Title</code> ingresar lo mismo que hayas elegido como correo o comentario de la clave al crearla.</li>
+<li>En <code>Key</code> pegar la clave pública extraída con <code>cat $HOME/.ssh/id_rsa.pub</code>.</li>
+<li>Haz click en <code>Add SSH key</code>.</li>
+</ol>
+<h3><a id="content-contenedor-docker-con-php-y-caddy" href="guide-es.html#content-contenedor-docker-con-php-y-caddy" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Contenedor Docker con PHP y Caddy</h3>
+<p>Instalar <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://derafu.org/docker-php-caddy-server">Docker</a> en <code>$DOCKER_DIR</code> en el equipo local:</p>
+<pre><code class="line-numbers match-braces language-shell">DEV_DIR=$HOME/dev
+DOCKER_DIR=$DEV_DIR/docker-sites-php
+mkdir -p $DEV_DIR
+git clone https://github.com/derafu/docker-php-caddy-server.git $DOCKER_DIR
+cat $HOME/.ssh/id_rsa.pub &gt; $DOCKER_DIR/config/ssh/authorized_keys
+cd $DOCKER_DIR
+docker-compose up -d
+</code></pre>
+<p>Con esta configuración quedará en <code>$DOCKER_DIR/sites</code> la carpeta donde se instalarán los sitios a desarrollar. Esta carpeta estará compartida entre el equipo local y el contenedor Docker.</p>
+<h3><a id="content-conectar-al-contenedor-docker" href="guide-es.html#content-conectar-al-contenedor-docker" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Conectar al contenedor Docker</h3>
+<p>Ingresa al contenedor Docker directamente con:</p>
+<pre><code class="line-numbers match-braces language-shell">docker exec -it derafu-sites-server-php-caddy bash
+su - admin
+</code></pre>
+<p>También puedes ingresar al contenedor Docker mediante SSH:</p>
+<pre><code class="line-numbers match-braces language-shell">ssh admin@localhost -p 2222
+</code></pre>
+<p>O bien, si tienes configurado el alias <code>dev</code> en <code>$HOME/.ssh/config</code> de tu equipo local:</p>
+<pre><code class="line-numbers match-braces language-shell">ssh dev
+</code></pre>
+<p>Si prefieres acceder con el alias <code>dev</code> en tu equipo local, deberás configurar el alias en tu equipo local:</p>
+<pre><code class="line-numbers match-braces language-shell">echo &quot;
+Host dev
+    HostName localhost
+    User admin
+    Port 2222
+    IdentityFile $HOME/.ssh/id_rsa
+&quot; &gt;&gt; $HOME/.ssh/config
+</code></pre>
+<p><strong>Nota</strong>: El nombre del alias puede ser el que quieras, en este caso se usó <code>dev</code>.</p>
+<h3><a id="content-php-deployer" href="guide-es.html#content-php-deployer" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>PHP Deployer</h3>
+<p>Conectate al contenedor Docker e instala <a rel="nofollow noopener noreferrer" target="_blank" class="external-link" href="https://derafu.org/deployer">PHP Deployer</a> en <code>$DEPLOYER_DIR</code> dentro del contenedor:</p>
+<pre><code class="line-numbers match-braces language-shell">#DEPLOYER_DIR=$HOME/deployer # Esta variable ya está definida en el contenedor.
+git clone git@github.com:derafu/deployer.git $DEPLOYER_DIR
+cd $DEPLOYER_DIR
+composer update
+</code></pre>
+<h3><a id="content-configuración-de-sitios-web" href="guide-es.html#content-configuración-de-sitios-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configuración de sitios web</h3>
+<p>El archivo <code>$DEPLOYER_DIR/sites.php</code> contiene la configuración de los sitios web que se desplegarán:</p>
+<pre><code class="line-numbers match-braces language-php">return [
+    'www.example.com' =&gt; 'git@github.com:example/example.git',
+];
+</code></pre>
+<p>En este caso el sitio web es <code>www.example.com</code> y el repositorio es <code>git@github.com:example/example.git</code>. Deberás agregar a este archivo la configuración de todos los sitios web que podrías desplegar.</p>
+<h3><a id="content-clave-ssh-en-el-contenedor-docker" href="guide-es.html#content-clave-ssh-en-el-contenedor-docker" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Clave SSH en el contenedor Docker</h3>
+<p>Para hacer deploy al servidor de producción, es necesario que la clave SSH en el equipo local sea agregada al contenedor Docker.</p>
+<p>En tu equipo local, ejecuta:</p>
+<pre><code class="line-numbers match-braces language-shell">scp -P 2222 $HOME/.ssh/id_rsa* admin@localhost:.ssh/
+</code></pre>
+<p>O bien, si tienes configurado el alias <code>dev</code> en <code>$HOME/.ssh/config</code> de tu equipo local:</p>
+<pre><code class="line-numbers match-braces language-shell">scp $HOME/.ssh/id_rsa* dev:.ssh/
+</code></pre>
+<p><strong>Nota</strong>: Si prefieres mantener claves SSH diferentes para el contenedor Docker deberás crear una nueva clave SSH. Puedes usar el mismo comando que se usó para crear la clave SSH en el equipo local.</p>
+<h2><a id="content-desarrollar-un-sitio-web" href="guide-es.html#content-desarrollar-un-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Desarrollar un sitio web</h2>
+<h3><a id="content-crear-un-nuevo-sitio-web" href="guide-es.html#content-crear-un-nuevo-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Crear un nuevo sitio web</h3>
+<p>Ingresar al contenedor y ejecuta:</p>
+<pre><code class="line-numbers match-braces language-shell">#SITES_DIR=$HOME/sites # Esta variable ya está definida en el contenedor.
+cd $SITES_DIR
+composer create-project derafu/website www.example.com --stability=dev
+</code></pre>
+<h3><a id="content-clonar-un-sitio-web" href="guide-es.html#content-clonar-un-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Clonar un sitio web</h3>
+<p>Ingresar al contenedor y ejecuta:</p>
+<pre><code class="line-numbers match-braces language-shell">#SITES_DIR=$HOME/sites # Esta variable ya está definida en el contenedor.
+cd $SITES_DIR
+git clone git@github.com:example/example.git www.example.com
+cd www.example.com
+composer install
+</code></pre>
+<p><strong>Nota</strong>: Si el nombre del repositorio no es el mismo que el nombre del sitio web, deberás asignar, como en este ejemplo, explícitamente el nombre de la carpeta del sitio web. Si el nombre del repositorio es el mismo que el nombre del sitio web, puedes omitir el nombre de la carpeta.</p>
+<h2><a id="content-desplegar-un-sitio-web-a-producción" href="guide-es.html#content-desplegar-un-sitio-web-a-producción" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Desplegar un sitio web a producción</h2>
+<p>Todas estas instrucciones se ejecutan en el contenedor Docker.</p>
+<h3><a id="content-agregar-sitio-web-en-el-archivo-de-configuración" href="guide-es.html#content-agregar-sitio-web-en-el-archivo-de-configuración" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Agregar sitio web en el archivo de configuración</h3>
+<p>Asegurate de que el sitio web esté agregado en el archivo <code>$DEPLOYER_DIR/sites.php</code>. Puedes validar esto ejecutando:</p>
+<pre><code class="line-numbers match-braces language-shell">cd $DEPLOYER_DIR
+cat sites.php | grep 'www.example.com'
+</code></pre>
+<p>Si el sitio web no está agregado, deberás agregarlo en el archivo <code>$DEPLOYER_DIR/sites.php</code>.</p>
+<h3><a id="content-pruebas-de-estilo-calidad-de-código-y-pruebas-unitarias" href="guide-es.html#content-pruebas-de-estilo-calidad-de-código-y-pruebas-unitarias" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Pruebas de estilo, calidad de código y pruebas unitarias</h3>
+<p>Realiza pruebas de estilo, calidad de código y pruebas unitarias en el contenedor Docker con:</p>
+<pre><code class="line-numbers match-braces language-shell">cd $SITES_DIR/www.example.com
+composer phpcs
+composer phpstan
+composer tests
+</code></pre>
+<h3><a id="content-subir-cambios-a-github" href="guide-es.html#content-subir-cambios-a-github" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Subir cambios a GitHub</h3>
+<p>Si todo está correcto sube los cambios a GitHub:</p>
+<pre><code class="line-numbers match-braces language-shell">git add .
+git commit -m &quot;Actualización de sitio web&quot;
+git push
+</code></pre>
+<h3><a id="content-despliegue" href="guide-es.html#content-despliegue" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Despliegue</h3>
+<p>Si no hay errores, puedes hacer deploy al servidor de producción con:</p>
+<pre><code class="line-numbers match-braces language-shell">cd $DEPLOYER_DIR
+DEPLOYER_HOST=hosting.example.com
+vendor/bin/dep derafu:deploy:single --site=www.example.com
+</code></pre>
+<p>Acá debes modificar el host de producción y el sitio web que se desplegará.</p>
+<ul>
+<li><code>DEPLOYER_HOST</code>: host de producción, en este ejemplo es <code>hosting.example.com</code>.</li>
+<li><code>--site</code>: sitio web que se desplegará, en este ejemplo es <code>www.example.com</code>.</li>
+</ul>
+<p>Si ocurre algún error al hacer el deploy y tratas de hacer un deploy nuevo, es muy probable que el deploy esté bloqueado. Si esto sucede, puedes desbloquear y hacer deploy nuevamente con:</p>
+<pre><code class="line-numbers match-braces language-shell">DEPLOYER_HOST=hosting.example.com
+vendor/bin/dep derafu:deploy:single --site=www.example.com --unlock
+</code></pre>
+<h2><a id="content-actualizar-componentes" href="guide-es.html#content-actualizar-componentes" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Actualizar componentes</h2>
+<h3><a id="content-actualizar-docker" href="guide-es.html#content-actualizar-docker" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Actualizar Docker</h3>
+<p>En tu equipo local, ejecuta:</p>
+<pre><code class="line-numbers match-braces language-shell">cd $DOCKER_DIR
+git pull
+docker-compose build --no-cache
+docker-compose up -d
+</code></pre>
+<p><strong>Nota</strong>: Deberás volver a configurar el contenedor Docker con los pasos previos.</p>
+<h3><a id="content-actualizar-php-deployer" href="guide-es.html#content-actualizar-php-deployer" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Actualizar PHP Deployer</h3>
+<p>Ingresa al contenedor y ejecuta:</p>
+<pre><code class="line-numbers match-braces language-shell">cd $DEPLOYER_DIR
+git pull
+composer update
+</code></pre>
+<h3><a id="content-actualizar-sitio-web" href="guide-es.html#content-actualizar-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Actualizar sitio web</h3>
+<p>Ingresar al contenedor y ejecuta:</p>
+<pre><code class="line-numbers match-braces language-shell">cd $SITES_DIR/www.example.com
+git pull
+composer install
+</code></pre>
+<h2><a id="content-uso-de-herramientas-de-desarrollo" href="guide-es.html#content-uso-de-herramientas-de-desarrollo" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Uso de herramientas de desarrollo</h2>
+<h3><a id="content-composer" href="guide-es.html#content-composer" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Composer</h3>
+<p>Instalar dependencias:</p>
+<pre><code class="line-numbers match-braces language-shell">composer install
+</code></pre>
+<p>Agregar dependencia de desarrollo:</p>
+<pre><code class="line-numbers match-braces language-shell">composer require --dev nombre-de-la-dependencia
+</code></pre>
+<p>Agregar dependencia de producción:</p>
+<pre><code class="line-numbers match-braces language-shell">composer require nombre-de-la-dependencia
+</code></pre>
+<p>Eliminar dependencia:</p>
+<pre><code class="line-numbers match-braces language-shell">composer remove nombre-de-la-dependencia
+</code></pre>
+<p>Actualizar dependencias:</p>
+<pre><code class="line-numbers match-braces language-shell">composer update
+</code></pre>
+<p><strong>Nota</strong>: Normalmente solo se usa <code>composer install</code> para instalar dependencias.</p>
+<h3><a id="content-npm" href="guide-es.html#content-npm" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>NPM</h3>
+<p>Instalar dependencias:</p>
+<pre><code class="line-numbers match-braces language-shell">npm install
+</code></pre>
+<p>Agregar dependencia de desarrollo:</p>
+<pre><code class="line-numbers match-braces language-shell">npm install --save-dev nombre-de-la-dependencia
+</code></pre>
+<p>Agregar dependencia de producción:</p>
+<pre><code class="line-numbers match-braces language-shell">npm install --save nombre-de-la-dependencia
+</code></pre>
+<p>Eliminar dependencia:</p>
+<pre><code class="line-numbers match-braces language-shell">npm uninstall nombre-de-la-dependencia
+</code></pre>
+<p>Actualizar dependencias:</p>
+<pre><code class="line-numbers match-braces language-shell">npm update
+</code></pre>
+<p><strong>Nota</strong>: Normalmente solo se usa <code>npm install</code> para instalar dependencias.</p>
+<h3><a id="content-git" href="guide-es.html#content-git" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Git</h3>
+<p>Ver el estado de los cambios:</p>
+<pre><code class="line-numbers match-braces language-shell">git status
+</code></pre>
+<p>Agregar cambios:</p>
+<pre><code class="line-numbers match-braces language-shell">git add .
+</code></pre>
+<p>Hacer commit:</p>
+<pre><code class="line-numbers match-braces language-shell">git commit -m &quot;Mensaje del commit&quot;
+</code></pre>
+<p>Subir cambios a GitHub:</p>
+<pre><code class="line-numbers match-braces language-shell">git push
+</code></pre>
+<p>Actualizar repositorio local:</p>
+<pre><code class="line-numbers match-braces language-shell">git pull
+</code></pre>
+<p>Deshacer cambios:</p>
+<pre><code class="line-numbers match-braces language-shell">git checkout -- .
+</code></pre>
+<p><strong>Nota</strong>: En vez de utilizar punto <code>.</code> puedes especificar los archivos que deseas agregar, hacer commit o revertir.</p>
+<h3><a id="content-php-cs-fixer" href="guide-es.html#content-php-cs-fixer" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>PHP CS Fixer</h3>
+<p>Revisar estilo de código:</p>
+<pre><code class="line-numbers match-braces language-shell">composer phpcs
+</code></pre>
+<p>Corregir estilo de código:</p>
+<pre><code class="line-numbers match-braces language-shell">composer phpcs-fix
+</code></pre>
+<h3><a id="content-php-unit" href="guide-es.html#content-php-unit" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>PHP Unit</h3>
+<p>Ejecutar pruebas unitarias:</p>
+<pre><code class="line-numbers match-braces language-shell">composer tests
+</code></pre>
+<h2><a id="content-uso-de-terminal-en-el-contenedor-docker" href="guide-es.html#content-uso-de-terminal-en-el-contenedor-docker" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Uso de terminal en el contenedor Docker</h2>
+<p>Ingresar al directorio de un sitio web:</p>
+<pre><code class="line-numbers match-braces language-shell">cd $SITES_DIR/www.example.com
+</code></pre>
+<p>Salir del directorio:</p>
+<pre><code class="line-numbers match-braces language-shell">cd ..
+</code></pre>
+<p>Listar archivos:</p>
+<pre><code class="line-numbers match-braces language-shell">ls -la
+</code></pre>
+<p>Ver contenido de un archivo:</p>
+<pre><code class="line-numbers match-braces language-shell">cat $DEPLOYER_DIR/sites.php
+</code></pre>
+<p>Editar un archivo:</p>
+<pre><code class="line-numbers match-braces language-shell">nano $DEPLOYER_DIR/sites.php
+</code></pre>
+<p>Guardar y salir en <code>nano</code>:</p>
+<pre><code class="line-numbers match-braces language-shell">Ctrl + X
+</code></pre>
+</div>
+</div>
+                </main>
+                <div class="col-md-3 py-4">
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Package Info</div>
+                                <span class="smal text-muted">
+                                    <a href="https://github.com/derafu/site" target="_blank" class="link-secondary text-decoration-none">
+                                        <i class="fa-brands fa-github"></i>
+                                        derafu/site
+                                    </a>
+                                </span>
+                                <div class="my-2">
+                                    <img src="https://img.shields.io/github/stars/derafu/site" alt="GitHub Repo stars">
+                                    <img src="https://img.shields.io/github/forks/derafu/site" alt="GitHub forks">
+                                </div>
+                            </div>
+                        </li>
+                        <a href="index.html" class="list-group-item list-group-item-action ">
+                            README
+                        </a>
+                    </div>
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                            <div class="fw-bold">Docs</div>
+                            <span class="smal text-muted">Guides & Examples</span>
+                            </div>
+                        </li>
+                        <a href="guide-es.html" class="list-group-item list-group-item-action active">
+                            Guía en Español
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+            <div id="footer-container"></div>
+        <script src="https://derafu.org/js/derafu.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.js"></script>
+    </body>
+</html>
