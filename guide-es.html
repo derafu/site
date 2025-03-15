@@ -25,11 +25,13 @@
 <ul class="table-of-contents">
 <li><a href="guide-es.html#content-revisa-lo-que-necesitas-hacer-instalar-o-saber">Revisa lo que necesitas hacer, instalar o saber</a>
 <ul>
+<li><a href="guide-es.html#content-configurar-zsh-en-equipo-local-macos">Configurar ZSH en equipo local macOS</a></li>
 <li><a href="guide-es.html#content-clave-ssh-en-equipo-local">Clave SSH en equipo local</a></li>
 <li><a href="guide-es.html#content-agregar-clave-ssh-a-github">Agregar clave SSH a GitHub</a></li>
 <li><a href="guide-es.html#content-contenedor-docker-con-php-y-caddy">Contenedor Docker con PHP y Caddy</a></li>
 <li><a href="guide-es.html#content-conectar-al-contenedor-docker">Conectar al contenedor Docker</a></li>
 <li><a href="guide-es.html#content-clave-ssh-en-el-contenedor-docker">Clave SSH en el contenedor Docker</a></li>
+<li><a href="guide-es.html#content-configurar-git">Configurar Git</a></li>
 </ul>
 </li>
 <li><a href="guide-es.html#content-desarrolla-un-sitio-web">Desarrolla un sitio web</a>
@@ -66,15 +68,21 @@
 <li><a href="guide-es.html#content-uso-de-terminal-en-el-contenedor-docker">Uso de terminal en el contenedor Docker</a></li>
 </ul>
 <h2><a id="content-revisa-lo-que-necesitas-hacer-instalar-o-saber" href="guide-es.html#content-revisa-lo-que-necesitas-hacer-instalar-o-saber" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Revisa lo que necesitas hacer, instalar o saber</h2>
+<h3><a id="content-configurar-zsh-en-equipo-local-macos" href="guide-es.html#content-configurar-zsh-en-equipo-local-macos" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configurar ZSH en equipo local macOS</h3>
+<p>Si estás en macOS y usas ZSH como shell, puedes configurar ZSH para que acepte comentarios comandos con:</p>
+<pre><code class="line-numbers match-braces language-shell">echo &quot;setopt interactivecomments&quot; &gt;&gt; ~/.zshrc
+source ~/.zshrc
+</code></pre>
 <h3><a id="content-clave-ssh-en-equipo-local" href="guide-es.html#content-clave-ssh-en-equipo-local" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Clave SSH en equipo local</h3>
 <p>Es necesario tener una clave SSH en el equipo local, esta clave será utilizada para configurar tu contenedor Docker.</p>
 <p>Con el siguiente comando se obtiene una clave preexistente o se crea una nueva en <code>$HOME/.ssh/id_rsa</code> y <code>$HOME/.ssh/id_rsa.pub</code>. Si se crea una nueva deberás ingresar el correo para identificar al usuario dueño de la clave. Si lo prefieres, puedes ingresar tu usuario y nombre de equipo (en caso que tengas múltiples claves SSH en diferentes ambientes).</p>
-<pre><code class="line-numbers match-braces language-shell">if [ -f $HOME/.ssh/id_rsa.pub ]; then
-    cat $HOME/.ssh/id_rsa.pub
+<pre><code class="line-numbers match-braces language-shell">SSH_KEY=&quot;$HOME/.ssh/id_rsa&quot;
+if [ -f &quot;$SSH_KEY.pub&quot; ]; then
+    cat &quot;$SSH_KEY.pub&quot;
 else
-    read -p &quot;Ingresa tu correo: &quot; COMMENT
-    ssh-keygen -t rsa -b 4096 -N &quot;&quot; -C &quot;$COMMENT&quot; -f $HOME/.ssh/id_rsa
-    cat $HOME/.ssh/id_rsa.pub
+    echo -n &quot;Ingresa tu correo: &quot;; read COMMENT
+    ssh-keygen -t rsa -b 4096 -N &quot;&quot; -C &quot;$COMMENT&quot; -f &quot;$SSH_KEY&quot;
+    cat &quot;$SSH_KEY.pub&quot;
 fi
 </code></pre>
 <p>Con este comando la clave pública será mostrada en pantalla. Si la necesitas volver a ver en el futuro ejecuta:</p>
@@ -123,6 +131,8 @@ Host dev
     User admin
     Port 2222
     IdentityFile $HOME/.ssh/id_rsa
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
 &quot; &gt;&gt; $HOME/.ssh/config
 </code></pre>
 <p><strong>Nota</strong>: El nombre del alias puede ser el que quieras, en este caso se usó <code>dev</code>.</p>
@@ -135,6 +145,37 @@ Host dev
 <pre><code class="line-numbers match-braces language-shell">scp $HOME/.ssh/id_rsa* dev:.ssh/
 </code></pre>
 <p><strong>Nota</strong>: Si prefieres mantener claves SSH diferentes para el contenedor Docker deberás crear una nueva clave SSH. Puedes usar el mismo comando que se usó para crear la clave SSH en el equipo local.</p>
+<h3><a id="content-configurar-git" href="guide-es.html#content-configurar-git" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configurar Git</h3>
+<p>Configurar Git dentro del contenedor Docker:</p>
+<pre><code class="line-numbers match-braces language-shell">git config --global user.email &quot;you@example.com&quot;  # Your github email.
+git config --global user.name &quot;Your Name&quot;         # Your name.
+git config --global core.ignorecase false         # Case sensitive.
+git config --global pull.rebase false             # Rebase instead of merge.
+git config --global merge.ff false                # Fast forward.
+git config --global core.editor nano              # Default editor nano or any other.
+</code></pre>
+<p>Adicionalmente agregar firma de commits. Primero, crear la clave SSH en el equipo local:</p>
+<pre><code class="line-numbers match-braces language-shell">SSH_KEY=&quot;$HOME/.ssh/id_ed25519&quot;
+if [ -f &quot;$SSH_KEY.pub&quot; ]; then
+    cat &quot;$SSH_KEY.pub&quot;
+else
+    echo -n &quot;Ingresa tu correo: &quot;; read COMMENT
+    ssh-keygen -t ed25519 -N &quot;&quot; -C &quot;$COMMENT&quot; -f &quot;$SSH_KEY&quot;
+    cat &quot;$SSH_KEY.pub&quot;
+fi
+</code></pre>
+<p>Luego agregar la clave SSH al contenedor Docker:</p>
+<pre><code class="line-numbers match-braces language-shell">scp -P 2222 $HOME/.ssh/id_ed25519* admin@localhost:.ssh/
+</code></pre>
+<p>O bien, si tienes configurado el alias <code>dev</code> en <code>$HOME/.ssh/config</code> de tu equipo local:</p>
+<pre><code class="line-numbers match-braces language-shell">scp $HOME/.ssh/id_ed25519* dev:.ssh/
+</code></pre>
+<p>Finalmente, dentro del contenedor Docker configura Git para firmar commits:</p>
+<pre><code class="line-numbers match-braces language-shell">git config --global commit.gpgSign true               # Sign commits.
+git config --global user.signingkey ~/.ssh/id_ed25519 # Your ssh key.
+git config --global gpg.format ssh                    # Use ssh key.
+git config --global tag.gpgSign true                  # Sign tags.
+</code></pre>
 <h2><a id="content-desarrolla-un-sitio-web" href="guide-es.html#content-desarrolla-un-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Desarrolla un sitio web</h2>
 <h3><a id="content-crear-un-nuevo-sitio-web" href="guide-es.html#content-crear-un-nuevo-sitio-web" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Crear un nuevo sitio web</h3>
 <p>Ingresar al contenedor y ejecuta:</p>
