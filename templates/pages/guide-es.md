@@ -6,6 +6,15 @@ Esta guía explica cómo crear un nuevo sitio web usando esta base y los proyect
 
 ## Revisa lo que necesitas hacer, instalar o saber
 
+### Configurar ZSH en equipo local macOS
+
+Si estás en macOS y usas ZSH como shell, puedes configurar ZSH para que acepte comentarios comandos con:
+
+```shell
+echo "setopt interactivecomments" >> ~/.zshrc
+source ~/.zshrc
+```
+
 ### Clave SSH en equipo local
 
 Es necesario tener una clave SSH en el equipo local, esta clave será utilizada para configurar tu contenedor Docker.
@@ -13,12 +22,13 @@ Es necesario tener una clave SSH en el equipo local, esta clave será utilizada 
 Con el siguiente comando se obtiene una clave preexistente o se crea una nueva en `$HOME/.ssh/id_rsa` y `$HOME/.ssh/id_rsa.pub`. Si se crea una nueva deberás ingresar el correo para identificar al usuario dueño de la clave. Si lo prefieres, puedes ingresar tu usuario y nombre de equipo (en caso que tengas múltiples claves SSH en diferentes ambientes).
 
 ```shell
-if [ -f $HOME/.ssh/id_rsa.pub ]; then
-    cat $HOME/.ssh/id_rsa.pub
+SSH_KEY="$HOME/.ssh/id_rsa"
+if [ -f "$SSH_KEY.pub" ]; then
+    cat "$SSH_KEY.pub"
 else
-    read -p "Ingresa tu correo: " COMMENT
-    ssh-keygen -t rsa -b 4096 -N "" -C "$COMMENT" -f $HOME/.ssh/id_rsa
-    cat $HOME/.ssh/id_rsa.pub
+    echo -n "Ingresa tu correo: "; read COMMENT
+    ssh-keygen -t rsa -b 4096 -N "" -C "$COMMENT" -f "$SSH_KEY"
+    cat "$SSH_KEY.pub"
 fi
 ```
 
@@ -95,6 +105,8 @@ Host dev
     User admin
     Port 2222
     IdentityFile $HOME/.ssh/id_rsa
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
 " >> $HOME/.ssh/config
 ```
 
@@ -117,6 +129,53 @@ scp $HOME/.ssh/id_rsa* dev:.ssh/
 ```
 
 **Nota**: Si prefieres mantener claves SSH diferentes para el contenedor Docker deberás crear una nueva clave SSH. Puedes usar el mismo comando que se usó para crear la clave SSH en el equipo local.
+
+### Configurar Git
+
+Configurar Git dentro del contenedor Docker:
+
+```shell
+git config --global user.email "you@example.com"  # Your github email.
+git config --global user.name "Your Name"         # Your name.
+git config --global core.ignorecase false         # Case sensitive.
+git config --global pull.rebase false             # Rebase instead of merge.
+git config --global merge.ff false                # Fast forward.
+git config --global core.editor nano              # Default editor nano or any other.
+```
+
+Adicionalmente agregar firma de commits. Primero, crear la clave SSH en el equipo local:
+
+```shell
+SSH_KEY="$HOME/.ssh/id_ed25519"
+if [ -f "$SSH_KEY.pub" ]; then
+    cat "$SSH_KEY.pub"
+else
+    echo -n "Ingresa tu correo: "; read COMMENT
+    ssh-keygen -t ed25519 -N "" -C "$COMMENT" -f "$SSH_KEY"
+    cat "$SSH_KEY.pub"
+fi
+```
+
+Luego agregar la clave SSH al contenedor Docker:
+
+```shell
+scp -P 2222 $HOME/.ssh/id_ed25519* admin@localhost:.ssh/
+```
+
+O bien, si tienes configurado el alias `dev` en `$HOME/.ssh/config` de tu equipo local:
+
+```shell
+scp $HOME/.ssh/id_ed25519* dev:.ssh/
+```
+
+Finalmente, dentro del contenedor Docker configura Git para firmar commits:
+
+```shell
+git config --global commit.gpgSign true               # Sign commits.
+git config --global user.signingkey ~/.ssh/id_ed25519 # Your ssh key.
+git config --global gpg.format ssh                    # Use ssh key.
+git config --global tag.gpgSign true                  # Sign tags.
+```
 
 ## Desarrolla un sitio web
 
