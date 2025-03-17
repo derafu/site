@@ -113,9 +113,11 @@ En tu equipo local, ejecuta:
 scp $HOME/.ssh/id_rsa* dev:.ssh/
 ```
 
-### Configurar Git
+### Configuración básica de Git
 
-Configurar tu correo y nombre de GitHub:
+Realiza las siguientes configuraciones dentro del contenedor Docker.
+
+Primero, configurar tu correo y nombre de GitHub:
 
 {.alert .alert-warning .my-3}
 <i class="fa fa-exclamation-triangle fa-fw me-2"></i>
@@ -140,7 +142,9 @@ Configurar editor de texto:
 git config --global core.editor nano              # Default editor nano or any other.
 ```
 
-Finalmente, agregar firma de commits. Primero, crear la clave SSH en el equipo local:
+### Configurar firma de commits en Git
+
+Primero, crear la clave SSH en el equipo local:
 
 ```shell
 SSH_KEY="$HOME/.ssh/id_ed25519"
