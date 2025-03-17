@@ -31,7 +31,8 @@
 <li><a href="guide-es.html#content-contenedor-docker-con-php-y-caddy">Contenedor Docker con PHP y Caddy</a></li>
 <li><a href="guide-es.html#content-conectar-al-contenedor-docker">Conectar al contenedor Docker</a></li>
 <li><a href="guide-es.html#content-clave-ssh-en-el-contenedor-docker">Clave SSH en el contenedor Docker</a></li>
-<li><a href="guide-es.html#content-configurar-git">Configurar Git</a></li>
+<li><a href="guide-es.html#content-configuración-básica-de-git">Configuración básica de Git</a></li>
+<li><a href="guide-es.html#content-configurar-firma-de-commits-en-git">Configurar firma de commits en Git</a></li>
 </ul>
 </li>
 <li><a href="guide-es.html#content-desarrolla-un-sitio-web">Desarrolla un sitio web</a>
@@ -136,8 +137,9 @@ Host dev
 <p>En tu equipo local, ejecuta:</p>
 <pre><code class="line-numbers match-braces language-shell">scp $HOME/.ssh/id_rsa* dev:.ssh/
 </code></pre>
-<h3><a id="content-configurar-git" href="guide-es.html#content-configurar-git" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configurar Git</h3>
-<p>Configurar tu correo y nombre de GitHub:</p>
+<h3><a id="content-configuración-básica-de-git" href="guide-es.html#content-configuración-básica-de-git" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configuración básica de Git</h3>
+<p>Realiza las siguientes configuraciones dentro del contenedor Docker.</p>
+<p>Primero, configurar tu correo y nombre de GitHub:</p>
 <p class="alert alert-warning my-3"><i class="fa fa-exclamation-triangle fa-fw me-2"></i>
 Antes de pegar este comando en el contenedor Docker, edítalo para que use tu correo y nombre de GitHub.</p>
 <pre><code class="line-numbers match-braces language-shell">git config --global user.email &quot;you@example.com&quot;  # Your github email.
@@ -151,7 +153,8 @@ git config --global merge.ff false                # Fast forward.
 <p>Configurar editor de texto:</p>
 <pre><code class="line-numbers match-braces language-shell">git config --global core.editor nano              # Default editor nano or any other.
 </code></pre>
-<p>Finalmente, agregar firma de commits. Primero, crear la clave SSH en el equipo local:</p>
+<h3><a id="content-configurar-firma-de-commits-en-git" href="guide-es.html#content-configurar-firma-de-commits-en-git" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configurar firma de commits en Git</h3>
+<p>Primero, crear la clave SSH en el equipo local:</p>
 <pre><code class="line-numbers match-braces language-shell">SSH_KEY=&quot;$HOME/.ssh/id_ed25519&quot;
 if [ -f &quot;$SSH_KEY.pub&quot; ]; then
     cat &quot;$SSH_KEY.pub&quot;
