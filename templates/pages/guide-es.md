@@ -67,6 +67,10 @@ Copiar y editar el archivo `.env` y configurar las variables de entorno según s
 cp .env-dist .env
 ```
 
+{.alert .alert-warning .my-3}
+<i class="fa fa-exclamation-triangle fa-fw me-2"></i>
+No avances hasta haber revisado y configurado el archivo `.env`.
+
 Construir el contenedor Docker:
 
 ```shell
@@ -77,26 +81,7 @@ Con esta configuración quedará en `$DOCKER_DIR/sites` la carpeta donde se inst
 
 ### Conectar al contenedor Docker
 
-Ingresa al contenedor Docker directamente con:
-
-```shell
-docker exec -it derafu-sites-server-php-caddy bash
-su - admin
-```
-
-También puedes ingresar al contenedor Docker mediante SSH:
-
-```shell
-ssh admin@localhost -p 2222
-```
-
-O bien, si tienes configurado el alias `dev` en `$HOME/.ssh/config` de tu equipo local:
-
-```shell
-ssh dev
-```
-
-Si prefieres acceder con el alias `dev` en tu equipo local, deberás configurar el alias en tu equipo local:
+Configura el alias `dev` de SSH en tu equipo local:
 
 ```shell
 echo "
@@ -110,40 +95,52 @@ Host dev
 " >> $HOME/.ssh/config
 ```
 
+Luego puedes ingresar al contenedor Docker con:
+
+```shell
+ssh dev
+```
+
 **Nota**: El nombre del alias puede ser el que quieras, en este caso se usó `dev`.
 
 ### Clave SSH en el contenedor Docker
 
-Para hacer deploy al servidor de producción, es necesario que la clave SSH en el equipo local sea agregada al contenedor Docker.
+Para trabajar con repositorios privados y hacer deploy al servidor de producción, es necesario que la clave SSH en el equipo local sea agregada al contenedor Docker.
 
 En tu equipo local, ejecuta:
-
-```shell
-scp -P 2222 $HOME/.ssh/id_rsa* admin@localhost:.ssh/
-```
-
-O bien, si tienes configurado el alias `dev` en `$HOME/.ssh/config` de tu equipo local:
 
 ```shell
 scp $HOME/.ssh/id_rsa* dev:.ssh/
 ```
 
-**Nota**: Si prefieres mantener claves SSH diferentes para el contenedor Docker deberás crear una nueva clave SSH. Puedes usar el mismo comando que se usó para crear la clave SSH en el equipo local.
-
 ### Configurar Git
 
-Configurar Git dentro del contenedor Docker:
+Configurar tu correo y nombre de GitHub:
+
+{.alert .alert-warning .my-3}
+<i class="fa fa-exclamation-triangle fa-fw me-2"></i>
+Antes de pegar este comando en el contenedor Docker, edítalo para que use tu correo y nombre de GitHub.
 
 ```shell
 git config --global user.email "you@example.com"  # Your github email.
 git config --global user.name "Your Name"         # Your name.
+```
+
+Configurar sensibilidad a mayúsculas/minúsculas y evitar mezclas de cambios:
+
+```shell
 git config --global core.ignorecase false         # Case sensitive.
 git config --global pull.rebase false             # Rebase instead of merge.
 git config --global merge.ff false                # Fast forward.
+```
+
+Configurar editor de texto:
+
+```shell
 git config --global core.editor nano              # Default editor nano or any other.
 ```
 
-Adicionalmente agregar firma de commits. Primero, crear la clave SSH en el equipo local:
+Finalmente, agregar firma de commits. Primero, crear la clave SSH en el equipo local:
 
 ```shell
 SSH_KEY="$HOME/.ssh/id_ed25519"
@@ -157,12 +154,6 @@ fi
 ```
 
 Luego agregar la clave SSH al contenedor Docker:
-
-```shell
-scp -P 2222 $HOME/.ssh/id_ed25519* admin@localhost:.ssh/
-```
-
-O bien, si tienes configurado el alias `dev` en `$HOME/.ssh/config` de tu equipo local:
 
 ```shell
 scp $HOME/.ssh/id_ed25519* dev:.ssh/
@@ -187,6 +178,8 @@ Ingresar al contenedor y ejecuta:
 site-create www.example.com
 ```
 
+**Nota**: Crear el sitio web requiere como paso posterior que configures su repositorio en GitHub y que agregues el sitio en el archivo `$DEPLOYER_DIR/sites.php` usando el comando `site-add`.
+
 ### Clonar un sitio web
 
 Ingresar al contenedor y ejecuta:
@@ -195,7 +188,7 @@ Ingresar al contenedor y ejecuta:
 site-clone www.example.com git@github.com:example/example.git
 ```
 
-**Nota**: Si el nombre del repositorio no es el mismo que el nombre del sitio web, deberás asignar, como en este ejemplo, explícitamente el nombre de la carpeta del sitio web. Si el nombre del repositorio es el mismo que el nombre del sitio web, puedes omitir el nombre de la carpeta.
+**Nota**: Al clonar un sitio web existente automáticamente se agrega el sitio en el archivo `$DEPLOYER_DIR/sites.php`.
 
 ### Visitar el sitio web en el navegador
 
@@ -219,7 +212,7 @@ Si creaste el sitio de 0 en vez de clonarlo, asegurate de que el sitio web esté
 site-add www.example.com git@github.com:example/example.git
 ```
 
-**Nota** Si el sitio requiere una configuración especial deberás editar manualmente el archivo `$DEPLOYER_DIR/sites.php`.
+**Nota**: Si el sitio requiere una configuración especial deberás editar manualmente el archivo `$DEPLOYER_DIR/sites.php`.
 
 ### Pruebas de estilo, calidad de código y pruebas unitarias
 
@@ -239,7 +232,13 @@ site www.example.com
 site-send "Actualización de sitio web."
 ```
 
+**Nota**: Si el repositorio en GitHub tiene [configurado un webhook](https://derafu.org/github), el sitio web se desplegará automáticamente al subir los cambios y pasar las pruebas de estilo, calidad de código y pruebas unitarias en el workflow de GitHub Actions.
+
 ### Despliegue
+
+{.alert .alert-info .my-3}
+<i class="fa fa-info-circle fa-fw me-2"></i>
+No es necesario hacer deploy al servidor de producción si el repositorio en GitHub tiene [configurado un webhook](https://derafu.org/github){.alert-link}.
 
 Si no hay errores, puedes hacer deploy al servidor de producción con:
 
@@ -262,13 +261,17 @@ site-deploy-locked www.example.com
 En tu equipo local, ejecuta:
 
 ```shell
+DEV_DIR=$HOME/dev
+DOCKER_DIR=$DEV_DIR/docker-sites-php
 cd $DOCKER_DIR
 git pull
 docker-compose build --no-cache
 docker-compose up -d
 ```
 
-**Nota**: Deberás volver a configurar el contenedor Docker con los pasos previos.
+{.alert .alert-warning .my-3}
+<i class="fa fa-exclamation-triangle fa-fw me-2"></i>
+Debes volver a agregar las claves SSH al contenedor Docker y configurar Git dentro del contenedor.
 
 ### Actualizar PHP Deployer
 
